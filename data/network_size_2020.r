@@ -60,3 +60,10 @@ describe(val_ns_df$Total)
 
 ggplot(data = val_ns_df, aes(x = Total)) +
   geom_density()
+
+#isolating NS
+summary (ns_df$w9zd4_1) #2115 NAs - these are the same for val_ns_df
+summary (ns_df$w9zd4_2) #2218 NAs
+summary (ns_df$w9zd4_3) #2345 NAs
+summary (ns_df$w9zd1) #1584 NAs - different than w9zd4_1 - 531 received question but did not answer closeness at all
+
