@@ -3,8 +3,7 @@ library(rio)
 library(tidyverse)
 
 #import data
-data <-
-  import ("C:/Users/ashle/OneDrive/Desktop/anes2008_2009panel_dataset.dta")
+data <- import ("data/original-data/anes2008_2009panel_dataset.dta")
 
 #clean dataset
 tidy_data <-
