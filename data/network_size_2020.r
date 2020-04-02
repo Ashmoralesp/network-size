@@ -75,6 +75,19 @@ summary (ns_df$w9zd4_2) #2218 NAs
 summary (ns_df$w9zd4_3) #2345 NAs
 summary (ns_df$w9zd1) #1584 NAs - different than w9zd4_1 - 531 received question but did not answer closeness at all
 
+#Table of clean_ns_df
+clean_ns_df <- ns_df%>%
+  select (w9zd4_1,w9zd4_2,w9zd4_3,w9zd1) %>%
+  rename ("Received Question" = "w9zd1")%>%
+  rename ("Identified Closeness with 1 Individual" = "w9zd4_1")%>%
+  rename ("Identified Closeness with 2 Individuals" = "w9zd4_2")%>%
+  rename ("Identified Closenes with 3 or more individuals" = "w9zd4_3")%>%
+  mutate_if(is.character, as.numeric)
+as_tibble(clean_ns_df)
+summary(clean_ns_df) 
 
-          
-          
+table(clean_ns_df$`Received Question`)
+table(clean_ns_df$`Identified Closeness with 1 Individual`)
+table(clean_ns_df$`Identified Closeness with 2 Individuals`)
+table(clean_ns_df$`Identified Closenes with 3 or more individuals`)
+        
