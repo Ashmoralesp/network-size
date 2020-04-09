@@ -92,7 +92,7 @@ summary (ns_df$w9zd1) #1584 NAs - different than w9zd4_1 - 531 received question
 
 #Table of clean_ns_df
 clean_ns_df <- ns_df%>%
-  select (w9zd4_1,w9zd4_2,w9zd4_3,w9zd1) %>%
+  select (w9zd1, w9zd4_1,w9zd4_2,w9zd4_3) %>%
   rename ("rec_q" = "w9zd1")%>%
   rename ("id_1" = "w9zd4_1")%>%
   rename ("id_2" = "w9zd4_2")%>%
