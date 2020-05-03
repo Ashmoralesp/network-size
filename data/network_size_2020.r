@@ -26,28 +26,42 @@ tidy_data <-
   mutate_if(is.character, as.numeric)
 
 
-#create base participatory index
+#create base participatory index (not for NS analysis)
 tidy_data$part_index_base = tidy_data$w11zd21 + tidy_data$w11zd22 +
   tidy_data$w11zd23 +  tidy_data$w11zd24 + tidy_data$w11zd25 + 
   tidy_data$w11zd26 + tidy_data$w11zd27 +tidy_data$w11zd28 + 
   tidy_data$w11zd29
 
-#create main participatory index
+#create main participatory index (not for NS analysis)
 tidy_data$part_index_main = tidy_data$w11zd21 + tidy_data$w11zd26 + 
   tidy_data$w11zd27 + tidy_data$w11zd28 + tidy_data$w11zd29
 
-#Recode Network Size Variables
+#Recode Network Size Variables (initial recode)
 ns_df <- tidy_data %>%
-  mutate_at(c("w9zd4_1", "w9zd4_2", "w9zd4_3"), funs(recode(.,
-    `1` = "1",
-    `2` = "1",
-    `3` = "1",
-    `4` = "1",
-    `5` = "1"))) %>%
-  mutate_at(c("w9zd1"), funs(recode(., `1` = "1", `2` = "1"))) %>%
-  mutate_if(is.character, as.numeric)
+  mutate(w9zd4_1=recode(w9zd4_1, 
+                  `1` = "1",
+                  `2` = "1",
+                  `3` = "1",
+                  `4` = "1",
+                  `5` = "1"))%>%
+  mutate(w9zd4_2=recode(w9zd4_2, 
+                  `1` = "1",
+                  `2` = "1",
+                  `3` = "1",
+                  `4` = "1",
+                  `5` = "1"))%>%
+  mutate(w9zd4_3=recode(w9zd4_3, 
+                  `1` = "1",
+                  `2` = "1",
+                  `3` = "1",
+                  `4` = "1",
+                  `5` = "1"))%>%
+  mutate(w9zd1 = recode(w9zd1,
+         `1` = "1",
+         `2` = "1"))%>%
+    mutate_if(is.character, as.numeric)
 
-#Creating Total Network Size Variable
+#Creating Total Network Size Variable - Initial Attempt Index (Not used in subsequent analysis for now)
 val_ns_df <- ns_df %>%
   mutate_at(c("w9zd1"), funs(recode(., `1` = "0"))) %>%
   mutate (Total = select(., w9zd4_1:w9zd4_3) %>%
@@ -61,7 +75,8 @@ describe(val_ns_df$Total)
 ggplot(data = val_ns_df, aes(x = Total)) +
   geom_density()
 
-#isolating NS
+
+#Isolating NS - as discussed last session
 
 #Frequencies of original data
 table(data$w9zd1)
@@ -75,6 +90,27 @@ summary (ns_df$w9zd4_2) #2218 NAs
 summary (ns_df$w9zd4_3) #2345 NAs
 summary (ns_df$w9zd1) #1584 NAs - different than w9zd4_1 - 531 received question but did not answer closeness at all
 
+#Table of clean_ns_df
+clean_ns_df <- ns_df%>%
+  select (w9zd1, w9zd4_1,w9zd4_2,w9zd4_3) %>%
+  rename ("rec_q" = "w9zd1")%>%
+  rename ("id_1" = "w9zd4_1")%>%
+  rename ("id_2" = "w9zd4_2")%>%
+  rename ("id_3" = "w9zd4_3")%>%
+  mutate_if(is.character, as.numeric)
+as_tibble(clean_ns_df)
+summary(clean_ns_df) 
 
-          
-          
+table(clean_ns_df$`rec_q`)
+table(clean_ns_df$`id_1`)
+table(clean_ns_df$`id_2`)
+table(clean_ns_df$`id_3`)
+        
+comp_tab <- apply(clean_ns_df,2, table)
+comp_tab     
+
+#From here, 2656 people received question, but only 2125 people answered
+#closeness to any of their network size, suggesting that the 531 that did 
+#not answer any of the network size relation questions would be implied 
+#zeroes. Under this, there would only be 531 potential zeroes compared to 
+#1584 NAs given by those that were not asked the question. 
