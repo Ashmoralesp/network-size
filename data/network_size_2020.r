@@ -26,7 +26,7 @@ tidy_data <-
   mutate_if(is.character, as.numeric)
 
 
-#create base participatory index (not for NS analysis)
+#create base participatory index 
 tidy_data$part_index_base = tidy_data$w11zd21 + tidy_data$w11zd22 +
   tidy_data$w11zd23 +  tidy_data$w11zd24 + tidy_data$w11zd25 + 
   tidy_data$w11zd26 + tidy_data$w11zd27 +tidy_data$w11zd28 + 
@@ -107,10 +107,30 @@ table(clean_ns_df$`id_2`)
 table(clean_ns_df$`id_3`)
         
 comp_tab <- apply(clean_ns_df,2, table)
-comp_tab     
+comp_tab  
 
-#From here, 2656 people received question, but only 2125 people answered
-#closeness to any of their network size, suggesting that the 531 that did 
-#not answer any of the network size relation questions would be implied 
-#zeroes. Under this, there would only be 531 potential zeroes compared to 
-#1584 NAs given by those that were not asked the question. 
+
+#Analysis with Political Participation - NAs as zeroes
+
+#Main Political Participation Index in clean_ns_Df
+clean_ns_df$part_index_main = tidy_data$w11zd21 + tidy_data$w11zd26 + 
+  tidy_data$w11zd27 + tidy_data$w11zd28 + tidy_data$w11zd29
+
+#Turn NAs into zeroes from clean_ns_df
+na_omit_df <- na.omit(clean_ns_df)
+view(na_omit_df)
+
+#Initial Basic Regressions with Political Participation Index and 4 vars separate
+clean_fit <- lm(part_index_main ~ rec_q + id_1 + id_2 + id_3, data=na_omit_df)
+summary(clean_fit)
+
+#NS index
+na_omit_df$ns_index = na_omit_df$rec_q + na_omit_df$id_1 + na_omit_df$id_2 + na_omit_df$id_3
+
+#Index Regression
+index_fit <- lm(part_index_main ~ ns_index, data=na_omit_df)
+summary(index_fit)
+
+#Plot of Index Regression
+plot (part_index_main ~ ns_index, data=na_omit_df)
+abline(index_fit)
