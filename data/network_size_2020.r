@@ -116,21 +116,54 @@ comp_tab
 clean_ns_df$part_index_main = tidy_data$w11zd21 + tidy_data$w11zd26 + 
   tidy_data$w11zd27 + tidy_data$w11zd28 + tidy_data$w11zd29
 
-#Turn NAs into zeroes from clean_ns_df
-na_omit_df <- na.omit(clean_ns_df)
-view(na_omit_df)
+#Turn Drop NAs from people without question and turn rest NAs into 0
+na_zero_df <- clean_ns_df
+
+na_zero_df<- na_zero_df[!is.na(na_zero_df$rec_q),]
+view(na_zero_df)
+
+na_zero_df[is.na(na_zero_df)] <- 0
+View(na_zero_df)
 
 #Initial Basic Regressions with Political Participation Index and 4 vars separate
-clean_fit <- lm(part_index_main ~ rec_q + id_1 + id_2 + id_3, data=na_omit_df)
+clean_fit <- lm(part_index_main ~ rec_q + id_1 + id_2 + id_3, data=na_zero_df)
 summary(clean_fit)
 
 #NS index
-na_omit_df$ns_index = na_omit_df$rec_q + na_omit_df$id_1 + na_omit_df$id_2 + na_omit_df$id_3
+na_zero_df$ns_index = na_zero_df$rec_q + na_zero_df$id_1 + na_zero_df$id_2 + na_zero_df$id_3
 
 #Index Regression
-index_fit <- lm(part_index_main ~ ns_index, data=na_omit_df)
+index_fit <- lm(part_index_main ~ ns_index, data=na_zero_df)
 summary(index_fit)
 
 #Plot of Index Regression
-plot (part_index_main ~ ns_index, data=na_omit_df)
+plot (part_index_main ~ ns_index, data=na_zero_df)
 abline(index_fit)
+
+
+#Analysis with Political Participation - NAs dropped and Zero Size Dropped
+
+#Drop cases where no question AND no Network Size
+na_drop_df <- clean_ns_df
+na_drop_df<-na_drop_df[!is.na(na_drop_df$rec_q),]
+na_drop_df <- na_drop_df[!is.na(na_drop_df$id_1),]
+
+#Change the rest of NAs to 0 for the Network Sizes Beyond Zero
+na_drop_df[is.na(na_drop_df)] <- 0
+view(na_drop_df)
+
+#Initial Basic Regressions with Political Participation Index and 4 vars separate
+clean_fit <- lm(part_index_main ~ rec_q + id_1 + id_2 + id_3, data=na_drop_df)
+summary(clean_fit)
+
+#NS index
+na_drop_df$ns_index = na_drop_df$rec_q + na_drop_df$id_1 + na_drop_df$id_2 + na_drop_df$id_3
+
+#Index Regression
+index_fit <- lm(part_index_main ~ ns_index, data=na_drop_df)
+summary(index_fit)
+
+#Plot of Index Regression
+plot (part_index_main ~ ns_index, data=na_drop_df)
+abline(index_fit)
+
